@@ -4,12 +4,11 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import dam2.dii.p21.config.ConfigService;
 import dam2.dii.p21.dao.UserDAO;
-import dam2.dii.p21.dao.UserDAOinMem;
 import dam2.dii.p21.model.User;
 
 public class LangService {
   private static LangService instance;
-  private static final UserDAO USER_DAO = UserDAOinMem.getInstance();
+  private static final UserDAO USER_DAO = PersistenceService.getUserDAO();
   private static ConfigService appService = ConfigService.getInstance();
 
   private LangService() {}

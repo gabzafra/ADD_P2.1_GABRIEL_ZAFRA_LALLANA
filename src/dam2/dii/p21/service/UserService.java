@@ -6,12 +6,11 @@ import java.util.stream.Collectors;
 import org.apache.log4j.Logger;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import dam2.dii.p21.dao.UserDAO;
-import dam2.dii.p21.dao.UserDAOJDBC;
 import dam2.dii.p21.model.User;
 
 public class UserService {
   private static UserService instance;
-  private static final UserDAO USER_DAO = UserDAOJDBC.getInstance();
+  private static final UserDAO USER_DAO = PersistenceService.getUserDAO();
   private static Logger log = Logger.getLogger("generic");
   private static StrongPasswordEncryptor crypt = new StrongPasswordEncryptor();
   private static LangService langSrv = LangService.getInstance();
