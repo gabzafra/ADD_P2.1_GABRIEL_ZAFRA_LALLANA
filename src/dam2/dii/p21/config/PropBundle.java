@@ -1,4 +1,4 @@
-package dam2.dii.p21.service;
+package dam2.dii.p21.config;
 
 import java.io.File;
 import java.util.Properties;
