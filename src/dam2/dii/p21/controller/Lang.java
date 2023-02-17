@@ -6,30 +6,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import dam2.dii.p21.service.ConfigService;
+import dam2.dii.p21.config.ConfigService;
 
 @WebServlet("/lang")
 public class Lang extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  private ConfigService appConfig;
+  private ConfigService appConfig = ConfigService.getInstance();
 
   public Lang() {
     super();
   }
 
-  private void initConfig(HttpServletRequest request) {
-    if (appConfig == null) {
-      String sysPath =
-          request.getServletContext().getRealPath("") + "\\WEB-INF\\classes\\dam2\\dii\\p21\\";
-
-      appConfig = ConfigService.getInstance(sysPath);
-    }
-  }
-
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-
-    initConfig(request);
 
     String sesionLocaleStr = (String) request.getSession().getAttribute("idioma");
 
@@ -37,7 +26,7 @@ public class Lang extends HttpServlet {
 
 
     if (sesionLocaleStr == null) {
-      sesionLocaleStr = ConfigService.getParametro("app.lang");
+      sesionLocaleStr = appConfig.getParametro("app.lang");
     } else if (!sesionLocaleStr.equals(lang)) {
       sesionLocaleStr = lang;
     }

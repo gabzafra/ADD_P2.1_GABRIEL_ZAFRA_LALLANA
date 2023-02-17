@@ -8,41 +8,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import dam2.dii.p21.model.User;
-import dam2.dii.p21.service.ConfigService;
 import dam2.dii.p21.service.LangService;
 import dam2.dii.p21.service.UserService;
 
 @WebServlet("/admin")
 public class Admin extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  private ConfigService appConfig;
-  private LangService langService;
+  private LangService langServ = LangService.getInstance();
+  private UserService userSrv = UserService.getInstance();
 
   public Admin() {
     super();
   }
 
-  private void initConfig(HttpServletRequest request) {
-    if (appConfig == null) {
-      String sysPath =
-          request.getServletContext().getRealPath("") + "\\WEB-INF\\classes\\dam2\\dii\\p21\\";
-
-      appConfig = ConfigService.getInstance(sysPath);
-      langService = LangService.getInstance(appConfig);
-    }
-  }
-
-
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    initConfig(request);
-
     Integer idAuth = (Integer) request.getSession().getAttribute("id");
     if (idAuth != null) {
-      User user = UserService.getUserById(idAuth);
+      User user = userSrv.getUserById(idAuth);
       if (user.isAdmin()) {
-        List<User> userList = UserService.getNonAdminUsers();
+        List<User> userList = userSrv.getNonAdminUsers();
         String updId = request.getParameter("upd");
         String delId = request.getParameter("del");
         if (updId == null && delId == null) {
@@ -60,15 +46,15 @@ public class Admin extends HttpServlet {
             response.sendError(404);
           }
         } else if (delId != null) {
-          User targetUser = UserService.getUserById(delId);
+          User targetUser = userSrv.getUserById(delId);
           if (request.getParameter("conf") != null) {
             // confirmado delete
-            String error = UserService.validateDeleteUser(targetUser, idAuth);
+            String error = userSrv.validateDeleteUser(targetUser, idAuth);
             if (error.length() > 0) {
-              error = LangService.getLocalError(idAuth, error);
+              error = langServ.getLocalError(idAuth, error);
               request.setAttribute("error", error);
             }
-            userList = UserService.getNonAdminUsers();
+            userList = userSrv.getNonAdminUsers();
             request.setAttribute("list", userList);
             request.setAttribute("detail", user);
             request.getRequestDispatcher("admin.jsp").forward(request, response);
@@ -92,17 +78,15 @@ public class Admin extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    initConfig(request);
-
     String filterStr = request.getParameter("filter");
     Integer idAuth = (Integer) request.getSession().getAttribute("id");
     if (idAuth != null) {
-      User user = UserService.getUserById(idAuth);
+      User user = userSrv.getUserById(idAuth);
       if (user.isAdmin()) {
         if (filterStr != null) {
-          request.setAttribute("list", UserService.getUsersFilteredByStart(filterStr));
+          request.setAttribute("list", userSrv.getUsersFilteredByStart(filterStr));
         } else {
-          request.setAttribute("list", UserService.getNonAdminUsers());
+          request.setAttribute("list", userSrv.getNonAdminUsers());
         }
         request.setAttribute("filter", filterStr);
         request.setAttribute("detail", user);

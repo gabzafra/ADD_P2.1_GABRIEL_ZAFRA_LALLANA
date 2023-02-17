@@ -1,4 +1,4 @@
-package dam2.dii.p21.service;
+package dam2.dii.p21.config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import dam2.dii.p21.service.PropBundle;
 
 public class ConfigService {
 
@@ -17,8 +18,19 @@ public class ConfigService {
   private static HashMap<String, String> propertyMap = new HashMap<String, String>();
   private static ConfigService instance;
 
-  private ConfigService(String sysPath) {
-    List<File> propFilesList = getPropFiles(sysPath + "properties\\");
+  private ConfigService() {
+
+  }
+
+  public static ConfigService getInstance() {
+    if (instance == null) {
+      instance = new ConfigService();
+    }
+    return instance;
+  }
+
+  public void initConfig(String classPath) {
+    List<File> propFilesList = getPropFiles(classPath + "properties\\");
 
     propFilesList.forEach(propFile -> {
       PropBundle prop = new PropBundle(propFile);
@@ -33,14 +45,7 @@ public class ConfigService {
       }
     });
 
-    initLogger(sysPath);
-  }
-
-  public static ConfigService getInstance(String sysPath) {
-    if (instance == null) {
-      instance = new ConfigService(sysPath);
-    }
-    return instance;
+    initLogger(classPath);
   }
 
 
@@ -79,7 +84,7 @@ public class ConfigService {
     return propKey.split("\\.")[0];
   }
 
-  public static String getParametro(String propertyKey) {
+  public String getParametro(String propertyKey) {
 
     String propertyValue = null;
     if (propertyMap.containsKey(propertyKey)) {
@@ -97,7 +102,7 @@ public class ConfigService {
     return propertyValue;
   }
 
-  public static boolean setProperty(String key, String value) {
+  public boolean setProperty(String key, String value) {
     PropBundle props = propList.get(getAlias(key));
     if (props != null) {
       props.setProperty(key, value);// Actualiza el bundle
