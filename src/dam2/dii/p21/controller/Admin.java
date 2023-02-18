@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import dam2.dii.p21.config.ConfigService;
 import dam2.dii.p21.model.User;
 import dam2.dii.p21.service.LangService;
 import dam2.dii.p21.service.UserService;
@@ -14,8 +15,9 @@ import dam2.dii.p21.service.UserService;
 @WebServlet("/admin")
 public class Admin extends HttpServlet {
   private static final long serialVersionUID = 1L;
-  private LangService langServ = LangService.getInstance();
+  private LangService langSrv = LangService.getInstance();
   private UserService userSrv = UserService.getInstance();
+  private ConfigService confSrv = ConfigService.getInstance();
 
   public Admin() {
     super();
@@ -35,6 +37,8 @@ public class Admin extends HttpServlet {
           request.setAttribute("error", null);
           request.setAttribute("list", userList);
           request.setAttribute("detail", user);
+          request.setAttribute("storemode", confSrv.getParametro("app.persistence"));
+          request.setAttribute("deflang", confSrv.getParametro("app.lang"));
           request.getRequestDispatcher("admin.jsp").forward(request, response);
         } else if (updId != null) {
           User updateUser = userList.stream().filter(u -> updId.equals(u.getId() + "")).findFirst()
@@ -51,11 +55,13 @@ public class Admin extends HttpServlet {
             // confirmado delete
             String error = userSrv.validateDeleteUser(targetUser, idAuth);
             if (error.length() > 0) {
-              error = langServ.getLocalError(idAuth, error);
+              error = langSrv.getLocalError(idAuth, error);
               request.setAttribute("error", error);
             }
             userList = userSrv.getNonAdminUsers();
             request.setAttribute("list", userList);
+            request.setAttribute("storemode", confSrv.getParametro("app.persistence"));
+            request.setAttribute("deflang", confSrv.getParametro("app.lang"));
             request.setAttribute("detail", user);
             request.getRequestDispatcher("admin.jsp").forward(request, response);
           } else {
@@ -90,6 +96,8 @@ public class Admin extends HttpServlet {
         }
         request.setAttribute("filter", filterStr);
         request.setAttribute("detail", user);
+        request.setAttribute("storemode", confSrv.getParametro("app.persistence"));
+        request.setAttribute("deflang", confSrv.getParametro("app.lang"));
         request.getRequestDispatcher("admin.jsp").forward(request, response);
       } else {
         response.sendError(404);

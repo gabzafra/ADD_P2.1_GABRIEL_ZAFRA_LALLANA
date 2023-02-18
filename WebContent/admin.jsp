@@ -14,7 +14,6 @@
         <!DOCTYPE html>
         <html lang="es">
         <jsp:include page="components/head.jsp" />
-
         <body>
             <jsp:include page="components/header.jsp" />
             <jsp:include page="components/profile-card.jsp" />
@@ -24,20 +23,20 @@
                         <legend class="h1"><%=rb.getString("update_defaults")%></legend>
                         <div class="container row">                        
 	                        <fieldset class="col">
-	                            <legend class="w-auto px-3">Storage mode:</legend>
+	                            <legend class="w-auto px-3"><%=rb.getString("storage_mode")%></legend>
 	                            <div class="btn-group btn-group-sm">
-	                                <input type="radio" class="btn-check" name="storemode" id="r11" value="mem" checked>
-	                                <label class="btn btn-outline-secondary" for="r11">Memory</label>
-	                                <input type="radio" class="btn-check" name="storemode" id="r12" value="jdbc">
-	                                <label class="btn btn-outline-secondary" for="r12">JDBC</label>
+	                                <input type="radio" class="btn-check" name="storemode" id="r11" value="mem" ${requestScope.storemode == 'mem' ? 'checked' : ''}>
+	                                <label class="btn btn-outline-secondary" for="r11"><%=rb.getString("memory")%></label>
+	                                <input type="radio" class="btn-check" name="storemode" id="r12" value="jdbc" ${requestScope.storemode == 'jdbc' ? 'checked' : ''}>
+	                                <label class="btn btn-outline-secondary" for="r12"><%=rb.getString("jdbc")%></label>
 	                            </div>
 	                        </fieldset>
 	                        <fieldset class="col">
-	                            <legend class="w-auto px-3">Default language:</legend>
+	                            <legend class="w-auto px-3"><%=rb.getString("default_lang")%></legend>
 	                            <div class="btn-group btn-group-sm">
-	                                <input type="radio" class="btn-check" name="deflang" id="r21" value="es" checked>
+	                                <input type="radio" class="btn-check" name="deflang" id="r21" value="es" ${requestScope.deflang == 'es' ? 'checked' : ''}>
 	                                <label class="btn btn-outline-secondary" for="r21"><%=rb.getString("lang_es")%></label>
-	                                <input type="radio" class="btn-check" name="deflang" id="r22" value="en">
+	                                <input type="radio" class="btn-check" name="deflang" id="r22" value="en" ${requestScope.deflang == 'en' ? 'checked' : ''}>
 	                                <label class="btn btn-outline-secondary" for="r22"><%=rb.getString("lang_en")%></label>
 	                            </div>
 	                        </fieldset>
