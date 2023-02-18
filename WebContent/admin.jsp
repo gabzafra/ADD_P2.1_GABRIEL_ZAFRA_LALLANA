@@ -19,9 +19,36 @@
             <jsp:include page="components/header.jsp" />
             <jsp:include page="components/profile-card.jsp" />
             <div class="contact-list container">
+                <form action="<%=request.getContextPath()%>/admin?defaults=true" method="POST">
+                    <fieldset>
+                        <legend class="h1"><%=rb.getString("update_defaults")%></legend>
+                        <div class="container row">                        
+	                        <fieldset class="col">
+	                            <legend class="w-auto px-3">Storage mode:</legend>
+	                            <div class="btn-group btn-group-sm">
+	                                <input type="radio" class="btn-check" name="storemode" id="r11" value="mem" checked>
+	                                <label class="btn btn-outline-secondary" for="r11">Memory</label>
+	                                <input type="radio" class="btn-check" name="storemode" id="r12" value="jdbc">
+	                                <label class="btn btn-outline-secondary" for="r12">JDBC</label>
+	                            </div>
+	                        </fieldset>
+	                        <fieldset class="col">
+	                            <legend class="w-auto px-3">Default language:</legend>
+	                            <div class="btn-group btn-group-sm">
+	                                <input type="radio" class="btn-check" name="deflang" id="r21" value="es" checked>
+	                                <label class="btn btn-outline-secondary" for="r21"><%=rb.getString("lang_es")%></label>
+	                                <input type="radio" class="btn-check" name="deflang" id="r22" value="en">
+	                                <label class="btn btn-outline-secondary" for="r22"><%=rb.getString("lang_en")%></label>
+	                            </div>
+	                        </fieldset>
+                        </div>
+                        <button type="submit" class="btn btn-success"><%=rb.getString("update_btn")%></button>                 
+                    </fieldset>
+                </form>
+                <hr>
                 <form action="<%=request.getContextPath()%>/admin" method="POST">
                     <fieldset>
-                        <legend><%=rb.getString("search_user")%></legend>
+                        <legend class="h1"><%=rb.getString("search_user")%></legend>
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="filter" placeholder="<%=rb.getString("name")%>"
                                 value="${requestScope.filter}">
@@ -31,6 +58,7 @@
                         <a href="./admin" class="btn btn-primary"><%=rb.getString("reset")%></a>                    
                     </fieldset>
                 </form>
+                <hr>
                 <h1><%=rb.getString("users")%></h1>
                 <c:forEach items="${requestScope.list}" var="user">
                     <div class="row align-items-center border p-2">

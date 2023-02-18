@@ -18,7 +18,7 @@
             <a class="navbar-brand" href="index.jsp"><%=rb.getString("home")%></a>
             <ul class="navbar-nav">
                 <c:if test="${sessionScope.idioma != null}">
-                    <li class="nav-item nav-link"><span class="fi <%=rb.getString("flag")%>"></span> <%=rb.getString("country")%></li>   
+                    <li class="nav-item nav-link"><span class="fi <%=rb.getString("flag")%>"></span></li>   
                 </c:if>    
                 <c:if test="${sessionScope.name == null}">
                     <li class="nav-item"><a class="nav-link" href="login.jsp"><%=rb.getString("login")%></a></li>
