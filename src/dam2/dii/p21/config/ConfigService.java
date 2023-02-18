@@ -101,14 +101,21 @@ public class ConfigService {
     return propertyValue;
   }
 
-  public boolean setProperty(String key, String value) {
+  public boolean updateProperty(String key, String value) {
     PropBundle props = propList.get(getAlias(key));
     if (props != null) {
-      props.setProperty(key, value);// Actualiza el bundle
-      propertyMap.put(key, value);// Actualiza la cache
-      // Intenta guardar en disco el bundle
-      return storePropsBundle(props);
+      // Mirar si es un valor distinto
+      if (!props.getProperty(key).equals(value)) {
+        props.setProperty(key, value);// Actualiza el bundle
+        propertyMap.put(key, value);// Actualiza la cache
+        // Intenta guardar en disco el bundle
+        return storePropsBundle(props);
+      } else {
+        // No hace falta realizar cambios
+        return true;
+      }
     } else {
+      // Propiedad no existe
       return false;
     }
   }

@@ -85,6 +85,9 @@ public class Admin extends HttpServlet {
       throws ServletException, IOException {
 
     String filterStr = request.getParameter("filter");
+    String storeMode = request.getParameter("storemode");
+    String defLang = request.getParameter("deflang");
+
     Integer idAuth = (Integer) request.getSession().getAttribute("id");
     if (idAuth != null) {
       User user = userSrv.getUserById(idAuth);
@@ -94,6 +97,13 @@ public class Admin extends HttpServlet {
         } else {
           request.setAttribute("list", userSrv.getNonAdminUsers());
         }
+        if (storeMode != null) {
+          confSrv.updateProperty("app.persistence", storeMode);
+        }
+        if (defLang != null) {
+          confSrv.updateProperty("app.lang", defLang);
+        }
+
         request.setAttribute("filter", filterStr);
         request.setAttribute("detail", user);
         request.setAttribute("storemode", confSrv.getParametro("app.persistence"));
