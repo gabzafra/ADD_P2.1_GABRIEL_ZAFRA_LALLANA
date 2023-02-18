@@ -41,6 +41,7 @@
 	                            </div>
 	                        </fieldset>
                         </div>
+                        <p class="text-danger small"><%=rb.getString("upd_def_info")%></p>
                         <button type="submit" class="btn btn-success"><%=rb.getString("update_btn")%></button>                 
                     </fieldset>
                 </form>
