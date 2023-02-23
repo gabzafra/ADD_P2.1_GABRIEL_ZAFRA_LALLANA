@@ -16,9 +16,11 @@ public class ConfigServletContextListener implements ServletContextListener {
   }
 
   public void contextInitialized(ServletContextEvent event) {
-    String realPath = event.getServletContext().getRealPath("");
-    String classPath = realPath + "\\WEB-INF\\classes\\dam2\\dii\\p21\\";
-    ConfigService.getInstance().initConfig(classPath);
+    try {
+      ConfigService.getInstance().initConfig();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     Logger.getLogger("generic").info("ServletContext up");
   }
 

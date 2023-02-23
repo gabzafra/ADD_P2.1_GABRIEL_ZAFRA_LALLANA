@@ -3,6 +3,7 @@ package dam2.dii.p21.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -28,33 +29,53 @@ public class ConfigService {
     return instance;
   }
 
-  public void initConfig(String classPath) {
-    List<File> propFilesList = getPropFiles(classPath + "properties\\");
+  public void initConfig() throws Exception {
 
-    propFilesList.forEach(propFile -> {
-      PropBundle prop = new PropBundle(propFile);
-      try (FileInputStream fis = new FileInputStream(propFile)) {
-        prop.load(fis);
-      } catch (Exception e) {
-        System.out.println("NO existe el fichero de propiedades");
-        prop = null;
-      }
-      if (prop != null) {
-        propList.put(prop.getAlias(), prop);
-      }
-    });
+    String propsPath = getRootPath();
+    if (propsPath.length() > 0) {
+      List<File> propFilesList = getPropFiles(propsPath);
 
-    initLogger(classPath);
+      propFilesList.forEach(propFile -> {
+        PropBundle prop = new PropBundle(propFile);
+        try (FileInputStream fis = new FileInputStream(propFile)) {
+          prop.load(fis);
+        } catch (Exception e) {
+          System.out.println("NO existe el fichero de propiedades");
+          prop = null;
+        }
+        if (prop != null) {
+          propList.put(prop.getAlias(), prop);
+        }
+      });
+    } else {
+      initLogger(propsPath);
+      throw new Exception("No se pudo inicializar la configuración.");
+    }
+    initLogger(propsPath);
+  }
+
+  private String getRootPath() {
+    File rootFile;
+    try {
+      rootFile = new File(getClass().getResource("/").toURI());
+      return rootFile.getAbsolutePath();
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+      return "";
+    }
   }
 
 
   private void initLogger(String sysPath) {
-    String logPropsPath = sysPath + "properties\\" + getParametro("paths.log") + ".properties";
+    String logPropsPath = sysPath + File.separator + getParametro("paths.log") + ".properties";
     Properties props = new Properties();
     // Set server log file location
     try (FileInputStream fis = new FileInputStream(logPropsPath)) {
       props.load(fis);
-      props.setProperty("log4j.appender.file.File", sysPath + "logs\\actions.log");
+
+      String actionLogFilePath = sysPath + getParametro("app.log-action-file");
+      props.setProperty("log4j.appender.file.File", actionLogFilePath);
+
       PropertyConfigurator.configure(props);
       Logger.getLogger("generic")
           .warn("Path del archivo de log -> " + props.getProperty("log4j.appender.file.File"));
@@ -68,14 +89,15 @@ public class ConfigService {
   private static List<File> getPropFiles(String pathFile) {
     Properties pathProps = new Properties();
 
-    try (FileInputStream fis = new FileInputStream(pathFile + "paths.properties")) {
+    File pathsFile = new File(pathFile + File.separator + "paths.properties");
+    try (FileInputStream fis = new FileInputStream(pathsFile)) {
       pathProps.load(fis);
     } catch (Exception e) {
       pathProps = null;
     }
 
     return pathProps.values().stream()
-        .map(propValue -> new File(pathFile + propValue + ".properties"))
+        .map(propValue -> new File(pathFile + File.separator + propValue + ".properties"))
         .collect(Collectors.toList());
   }
 
